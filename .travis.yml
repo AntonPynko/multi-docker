@@ -6,7 +6,7 @@ before_install:
   - docker build -t antonpynko/react-test -f ./client/Dockerfile.dev ./client
 
 scripts:
-  - docker run -e CI=true antonpynko/react-test npm test
+  - docker run antonpynko/react-test npm test -- --coverage
 
 after_success:
   - docker build -t antonpynko/multi-client ./client
