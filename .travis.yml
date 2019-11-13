@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t antonpynko/react-test -f ./client/Dockerfile.dev ./client
+
+scripts:
+  - docker run -e CI=true antonpynko/react-test npm test
+
+after_success:
+  - docker build -t antonpynko/multi-client ./client
+  - docker build -t antonpynko/multi-nginx ./nginx
+  - docker build -t antonpynko/multi-server ./server
+  - docker build -t antonpynko/multi-worker ./worker
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push antonpynko/multi-client
+  - docker push antonpynko/multi-nginx
+  - docker push antonpynko/multi-server
+  - docker push antonpynko/multi-worker
+
